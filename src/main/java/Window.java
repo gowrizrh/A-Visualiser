@@ -27,12 +27,29 @@ public class Window extends WindowAdapter implements WindowListener {
     private Graphics graph = null;
     private BufferStrategy strategy = null;
 
+    private int grid[][];
+
+    public final static Color white = new Color(228, 214, 167);
+    public final static Color black = new Color(25, 25, 35);
+    public final static Color blue = new Color(14, 121, 178);
+    public final static Color red = new Color(191, 19, 99);
+    public final static Color green = new Color(29, 211, 176);
+    public final static Color yellow = new Color(239, 202, 8);
+
+    public final static int EMPTY = 0;
+    public final static int WALL = 1;
+    public final static int EXPLORED = 2;
+    public final static int CLOSED = 5;
+    public final static int START = 6;
+    public final static int TARGET = 7;
+    public final static int PATH = 8;
+    public final static int MARK = 9;
 
     public Window() {
         super();
         frame = new Frame();
         canvas = new Canvas();
-        frame.setSize(800, 800);
+        frame.setSize(805, 825);
         frame.setResizable(false);
         frame.setLocationRelativeTo(null);
         canvas.setSize(800, 800);
@@ -47,10 +64,68 @@ public class Window extends WindowAdapter implements WindowListener {
         canvas.createBufferStrategy(2);
         strategy = canvas.getBufferStrategy();
         graph = strategy.getDrawGraphics();
+        initGrid();
+        render();
+    }
+
+    public void initGrid() {
+        grid = new int[40][40];
     }
 
     public void run() {
+        while (true) {
+            render();
+        }
+    }
 
+    public void render() {
+        int gridUnit = 800 / 40;
+        int gridUnitY = 800 / 40;
+        canvas.paint(graph);
+        do {
+            do {
+                graph = strategy.getDrawGraphics();
+                graph.setColor(Color.WHITE);
+
+                graph.fillRect(0, 0, 800, 800);
+                int gridCase = EMPTY;
+                for (int i = 0; i < 40; i++) {
+                    for (int j = 0; j < 40; j++) {
+                        gridCase = grid[i][j];
+                        graph.setColor(blue);
+                        graph.fillRect(j * gridUnit + 3,i * gridUnitY + 3, gridUnit - 3, gridUnitY - 3);
+                        switch (gridCase) {
+                            case WALL:
+                                graph.setColor(black);
+                                graph.fillRect(j * gridUnit + 3 , i * gridUnitY + 3, gridUnit - 3, gridUnitY - 3);
+                                break;
+                            case EXPLORED:
+                                graph.setColor(green);
+                                graph.fillRect(j * gridUnit + 3 , i * gridUnitY + 3, gridUnit - 3, gridUnitY - 3);
+                                break;
+                            case CLOSED:
+                                graph.setColor(red);
+                                graph.fillRect(j * gridUnit + 3, i * gridUnitY + 3, gridUnit - 3, gridUnitY - 3);
+                                break;
+                            case TARGET:
+                            case START:
+                            case PATH:
+                                graph.setColor(yellow);
+                                graph.fillRect(j * gridUnit + 3, i * gridUnitY + 3, gridUnit - 3, gridUnitY - 3);
+                                break;
+                            case MARK:
+                                graph.setColor(blue);
+                                graph.fillRect(j * gridUnit + 3, i * gridUnitY + 3, gridUnit - 3, gridUnitY - 3);
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                }
+            } while (strategy.contentsRestored());
+            strategy.show();
+            Toolkit.getDefaultToolkit().sync();
+        } while (strategy.contentsLost());
     }
 
     @Override
