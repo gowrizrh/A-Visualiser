@@ -45,6 +45,8 @@ public class Window extends WindowAdapter implements WindowListener {
     public final static int PATH = 8;
     public final static int MARK = 9;
 
+    public int gridSize = 10;
+
     public Window() {
         super();
         frame = new Frame();
@@ -69,7 +71,27 @@ public class Window extends WindowAdapter implements WindowListener {
     }
 
     public void initGrid() {
-        grid = new int[40][40];
+        grid = new int[gridSize][gridSize];
+
+        // TODO: Create a paser instead of hardcoding
+        String gridText = "0 0 1 0 0 0 0 0 0 0\n" +
+                "0 0 1 0 1 0 0 0 0 0\n" +
+                "0 0 1 0 1 0 0 0 0 0\n" +
+                "0 0 1 0 1 0 0 0 0 0\n" +
+                "0 0 1 0 1 0 0 0 0 0\n" +
+                "0 0 0 0 0 0 0 0 0 0\n" +
+                "0 0 1 0 0 0 0 0 0 0\n" +
+                "0 0 1 0 1 0 1 0 0 0\n" +
+                "0 0 1 0 1 1 1 1 0 0\n" +
+                "0 0 0 0 0 0 0 0 0 0";
+
+        String[] lines = gridText.split("\n");
+        for (int i = 0; i < lines.length; i++) {
+            String[] words = lines[i].split(" ");
+            for (int j = 0; j < words.length; j++) {
+                grid[i][j] = Integer.parseInt(words[j]);
+            }
+        }
     }
 
     public void run() {
@@ -79,8 +101,8 @@ public class Window extends WindowAdapter implements WindowListener {
     }
 
     public void render() {
-        int gridUnit = 800 / 40;
-        int gridUnitY = 800 / 40;
+        int gridUnit = 800 / gridSize;
+        int gridUnitY = 800 / gridSize;
         canvas.paint(graph);
         do {
             do {
@@ -89,10 +111,10 @@ public class Window extends WindowAdapter implements WindowListener {
 
                 graph.fillRect(0, 0, 800, 800);
                 int gridCase = EMPTY;
-                for (int i = 0; i < 40; i++) {
-                    for (int j = 0; j < 40; j++) {
+                for (int i = 0; i < gridSize; i++) {
+                    for (int j = 0; j < gridSize; j++) {
                         gridCase = grid[i][j];
-                        graph.setColor(blue);
+                        graph.setColor(white);
                         graph.fillRect(j * gridUnit + 3,i * gridUnitY + 3, gridUnit - 3, gridUnitY - 3);
                         switch (gridCase) {
                             case WALL:
