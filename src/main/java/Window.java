@@ -73,7 +73,7 @@ public class Window extends WindowAdapter implements WindowListener {
     public void initGrid() {
         grid = new int[gridSize][gridSize];
 
-        // TODO: Create a paser instead of hardcoding
+        // TODO: Create a parser instead of hard coding
         String gridText = "0 0 1 0 0 0 0 0 0 0\n" +
                 "0 0 1 0 1 0 0 0 0 0\n" +
                 "0 0 1 0 1 0 0 0 0 0\n" +
@@ -90,6 +90,35 @@ public class Window extends WindowAdapter implements WindowListener {
             String[] words = lines[i].split(" ");
             for (int j = 0; j < words.length; j++) {
                 grid[i][j] = Integer.parseInt(words[j]);
+            }
+        }
+    }
+
+    public void aStar() {
+        // For debugging purposes only
+        // "(1,3)(0,3)(0,4)(0,5)(1,5)(2,5)(3,5)(4,5)(5,5)(5,4)(5,3)(4,3)(3,3)";
+        int[][] fakePath = new int[13][2];
+        fakePath[0][0] = 1;
+        fakePath[0][1] = 3;
+        fakePath[1][0] = 0;
+        fakePath[1][1] = 3;
+        fakePath[2][0] = 0;
+        fakePath[2][1] = 4;
+        fakePath[3][0] = 0;
+        fakePath[3][1] = 5;
+        fakePath[4][0] = 1;
+        fakePath[4][1] = 5;
+        fakePath[5][0] = 2;
+        fakePath[5][1] = 5;
+
+        for (int i = 0; i < 6; i++) {
+            grid[fakePath[i][0]][fakePath[i][1]] = 8;
+
+            try {
+                Thread.sleep(500);
+                render();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
         }
     }
