@@ -137,7 +137,6 @@ public class Window extends WindowAdapter implements WindowListener {
             do {
                 graph = strategy.getDrawGraphics();
                 graph.setColor(Color.WHITE);
-
                 graph.fillRect(0, 0, 800, 800);
                 int gridCase = EMPTY;
                 for (int i = 0; i < gridSize; i++) {
