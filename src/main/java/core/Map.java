@@ -1,7 +1,5 @@
 package core;
 
-import jdk.jfr.StackTrace;
-
 import java.util.ArrayList;
 import java.util.List;
 
