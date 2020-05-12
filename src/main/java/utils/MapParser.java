@@ -40,7 +40,7 @@ public class MapParser {
         for (int r = 0; r < rows; r++) {
             Scanner scanner = new Scanner(lines.get(r));
             for (int c = 0; c < cols; c++) {
-                map.setValueAt(r, c, scanner.nextInt());
+                map.value(r, c, scanner.nextInt());
             }
             scanner.close();
         }

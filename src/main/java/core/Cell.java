@@ -20,4 +20,33 @@ public class Cell {
     public void val(int _val) {
         val = _val;
     }
+
+    public int x() {
+        return x;
+    }
+
+    public int y() {
+        return y;
+    }
+
+    public int f() {
+        return f;
+    }
+
+    public void f(int _f) {
+        f = _f;
+    }
+
+    public int g() {
+        return g;
+    }
+
+    public void g(int _g) {
+        g = _g;
+    }
+
+    @Override
+    public String toString() {
+        return "Cell(" + x + ", " + y + ")";
+    }
 }

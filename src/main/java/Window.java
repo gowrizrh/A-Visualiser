@@ -78,8 +78,8 @@ public class Window extends WindowAdapter implements WindowListener {
 
     public void initGrid() {
         world = parser.parse("src/main/resources/grid9.txt");
-        gridx = world.getRows();
-        gridy = world.getColumns();
+        gridx = world.x();
+        gridy = world.y();
     }
 
     public void run() {
@@ -100,7 +100,7 @@ public class Window extends WindowAdapter implements WindowListener {
                 int gridCase = EMPTY;
                 for (int i = 0; i < gridx; i++) {
                     for (int j = 0; j < gridy; j++) {
-                        gridCase = world.getValueAt(i, j);
+                        gridCase = world.value(i, j);
                         graph.setColor(white);
                         graph.fillRect(j * gridUnit + 3,i * gridUnitY + 3, gridUnit - 3, gridUnitY - 3);
                         switch (gridCase) {
