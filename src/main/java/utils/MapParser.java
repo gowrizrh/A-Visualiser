@@ -23,7 +23,7 @@ public class MapParser {
      * We probably need some limit on this later
      */
     public Map parse(String path) {
-        Path filePath = FileSystems.getDefault().getPath("src/main/resources/grid1.txt");
+        Path filePath = FileSystems.getDefault().getPath(path);
         List<String> lines = null;
         try {
             lines = Files.readAllLines(filePath, StandardCharsets.UTF_8);

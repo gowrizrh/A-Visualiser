@@ -12,6 +12,7 @@ public class MapTest {
 
         Assert.assertEquals(10, map1.getRows());
         Assert.assertEquals(10, map1.getColumns());
+        Assert.assertEquals(0, map1.getValueAt(0, 0));
         Assert.assertEquals(1, map1.getValueAt(0, 2));
     }
 }

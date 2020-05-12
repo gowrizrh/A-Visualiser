@@ -14,6 +14,9 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+import core.Map;
+import utils.MapParser;
+
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -27,7 +30,8 @@ public class Window extends WindowAdapter implements WindowListener {
     private Graphics graph = null;
     private BufferStrategy strategy = null;
 
-    private int grid[][];
+    private Map world;
+    private MapParser parser;
 
     public final static Color white = new Color(228, 214, 167);
     public final static Color black = new Color(25, 25, 35);
@@ -45,10 +49,12 @@ public class Window extends WindowAdapter implements WindowListener {
     public final static int PATH = 8;
     public final static int MARK = 9;
 
-    public int gridSize = 10;
+    private int gridx;
+    private int gridy;
 
     public Window() {
         super();
+        parser = new MapParser();
         frame = new Frame();
         canvas = new Canvas();
         frame.setSize(805, 825);
@@ -71,56 +77,9 @@ public class Window extends WindowAdapter implements WindowListener {
     }
 
     public void initGrid() {
-        grid = new int[gridSize][gridSize];
-
-        // TODO: Create a parser instead of hard coding
-        String gridText = "0 0 1 0 0 0 0 0 0 0\n" +
-                "0 0 1 0 1 0 0 0 0 0\n" +
-                "0 0 1 0 1 0 0 0 0 0\n" +
-                "0 0 1 0 1 0 0 0 0 0\n" +
-                "0 0 1 0 1 0 0 0 0 0\n" +
-                "0 0 0 0 0 0 0 0 0 0\n" +
-                "0 0 1 0 0 0 0 0 0 0\n" +
-                "0 0 1 0 1 0 1 0 0 0\n" +
-                "0 0 1 0 1 1 1 1 0 0\n" +
-                "0 0 0 0 0 0 0 0 0 0";
-
-        String[] lines = gridText.split("\n");
-        for (int i = 0; i < lines.length; i++) {
-            String[] words = lines[i].split(" ");
-            for (int j = 0; j < words.length; j++) {
-                grid[i][j] = Integer.parseInt(words[j]);
-            }
-        }
-    }
-
-    public void aStar() {
-        // For debugging purposes only
-        // "(1,3)(0,3)(0,4)(0,5)(1,5)(2,5)(3,5)(4,5)(5,5)(5,4)(5,3)(4,3)(3,3)";
-        int[][] fakePath = new int[13][2];
-        fakePath[0][0] = 1;
-        fakePath[0][1] = 3;
-        fakePath[1][0] = 0;
-        fakePath[1][1] = 3;
-        fakePath[2][0] = 0;
-        fakePath[2][1] = 4;
-        fakePath[3][0] = 0;
-        fakePath[3][1] = 5;
-        fakePath[4][0] = 1;
-        fakePath[4][1] = 5;
-        fakePath[5][0] = 2;
-        fakePath[5][1] = 5;
-
-        for (int i = 0; i < 6; i++) {
-            grid[fakePath[i][0]][fakePath[i][1]] = 8;
-
-            try {
-                Thread.sleep(500);
-                render();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
+        world = parser.parse("src/main/resources/grid9.txt");
+        gridx = world.getRows();
+        gridy = world.getColumns();
     }
 
     public void run() {
@@ -130,8 +89,8 @@ public class Window extends WindowAdapter implements WindowListener {
     }
 
     public void render() {
-        int gridUnit = 800 / gridSize;
-        int gridUnitY = 800 / gridSize;
+        int gridUnit = 800 / gridx;
+        int gridUnitY = 800 / gridy;
         canvas.paint(graph);
         do {
             do {
@@ -139,9 +98,9 @@ public class Window extends WindowAdapter implements WindowListener {
                 graph.setColor(Color.WHITE);
                 graph.fillRect(0, 0, 800, 800);
                 int gridCase = EMPTY;
-                for (int i = 0; i < gridSize; i++) {
-                    for (int j = 0; j < gridSize; j++) {
-                        gridCase = grid[i][j];
+                for (int i = 0; i < gridx; i++) {
+                    for (int j = 0; j < gridy; j++) {
+                        gridCase = world.getValueAt(i, j);
                         graph.setColor(white);
                         graph.fillRect(j * gridUnit + 3,i * gridUnitY + 3, gridUnit - 3, gridUnitY - 3);
                         switch (gridCase) {
