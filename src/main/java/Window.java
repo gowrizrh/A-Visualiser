@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+import core.Cell;
 import core.Map;
 import utils.MapParser;
 
@@ -29,6 +30,7 @@ public class Window extends WindowAdapter implements WindowListener {
     private Canvas canvas = null;
     private Graphics graph = null;
     private BufferStrategy strategy = null;
+    private Starvis starvis = null;
 
     private Map world;
     private MapParser parser;
@@ -55,6 +57,7 @@ public class Window extends WindowAdapter implements WindowListener {
     public Window() {
         super();
         parser = new MapParser();
+        starvis = new Starvis();
         frame = new Frame();
         canvas = new Canvas();
         frame.setSize(805, 825);
@@ -83,9 +86,10 @@ public class Window extends WindowAdapter implements WindowListener {
     }
 
     public void run() {
-        while (true) {
-            render();
-        }
+        starvis.find(new Cell(5, 7), new Cell(0, 0), world);
+//        while (true) {
+//            render();
+//        }
     }
 
     public void render() {
