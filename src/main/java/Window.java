@@ -14,7 +14,6 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-import core.Cell;
 import core.Map;
 import utils.MapParser;
 
@@ -53,17 +52,22 @@ public class Window extends WindowAdapter implements WindowListener {
 
     private int gridx;
     private int gridy;
+    private int width;
+    private int height;
 
     public Window() {
         super();
         parser = new MapParser();
         starvis = new Starvis();
+        initGrid();
         frame = new Frame();
         canvas = new Canvas();
-        frame.setSize(805, 825);
+        width = 800;
+        height = 800;
+        frame.setSize(width, height);
         frame.setResizable(false);
         frame.setLocationRelativeTo(null);
-        canvas.setSize(800, 800);
+        canvas.setSize(width, height);
         frame.add(canvas);
         frame.addWindowListener(this);
         frame.dispose();
@@ -75,26 +79,25 @@ public class Window extends WindowAdapter implements WindowListener {
         canvas.createBufferStrategy(2);
         strategy = canvas.getBufferStrategy();
         graph = strategy.getDrawGraphics();
-        initGrid();
         render();
     }
 
     public void initGrid() {
-        world = parser.parse("src/main/resources/grid9.txt");
-        gridx = world.x();
-        gridy = world.y();
+        world = parser.parse("src/main/resources/grid1.txt");
+        gridx = world.rows();
+        gridy = world.cols();
     }
 
     public void run() {
-        starvis.find(new Cell(5, 7), new Cell(0, 0), world);
-//        while (true) {
-//            render();
-//        }
+        starvis.find(world.cell(5, 7), world.cell(0,0), world);
+        while (true) {
+            render();
+        }
     }
 
     public void render() {
-        int gridUnit = 800 / gridx;
-        int gridUnitY = 800 / gridy;
+        int gridUnit = width / gridy;
+        int gridUnitY = height / gridx;
         canvas.paint(graph);
         do {
             do {

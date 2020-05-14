@@ -13,10 +13,10 @@ public class MapTest {
         MapParser parser = new MapParser();
         Map map1 = parser.parse("src/main/resources/grid1.txt");
 
-        Assert.assertEquals(10, map1.x());
-        Assert.assertEquals(10, map1.y());
+        Assert.assertEquals(7, map1.rows());
+        Assert.assertEquals(10, map1.cols());
         Assert.assertEquals(0, map1.value(0, 0));
-        Assert.assertEquals(1, map1.value(0, 2));
+        Assert.assertEquals(1, map1.value(1, 1));
     }
 
     @Test
@@ -34,5 +34,14 @@ public class MapTest {
         Assert.assertSame("Cells should be same for performance reasons", c2, neighbours.get(1));
         Assert.assertSame("Cells should be same for performance reasons", c3, neighbours.get(2));
         Assert.assertSame("Cells should be same for performance reasons", c4, neighbours.get(3));
+    }
+
+    @Test
+    public void dimensions() {
+        MapParser parser = new MapParser();
+        Map map1 = parser.parse("src/main/resources/grid1.txt");
+
+        Assert.assertEquals("Map does not match number of columns in file", 10, map1.cols());
+        Assert.assertEquals("Map does not match number of rows in file", 7, map1.rows());
     }
 }
