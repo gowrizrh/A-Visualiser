@@ -1,4 +1,5 @@
 import javax.swing.*;
+import java.awt.*;
 
 public class Main {
     public static void main(String[] args) {
@@ -11,7 +12,7 @@ public class Main {
             }
         } catch (Exception e) {}
 
-        RenderWindow frame = new RenderWindow("Starvis");
-        frame.render();
+        // create frame
+        MainWindow frame = new MainWindow("Starvis");
     }
 }
