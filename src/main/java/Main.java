@@ -1,5 +1,4 @@
 import javax.swing.*;
-import java.awt.*;
 
 public class Main {
     public static void main(String[] args) {
@@ -12,7 +11,8 @@ public class Main {
             }
         } catch (Exception e) {}
 
-        // create frame
-        MainWindow frame = new MainWindow("Starvis");
+        SwingUtilities.invokeLater(() -> {
+            MainWindow frame = new MainWindow("Starvis");
+        });
     }
 }

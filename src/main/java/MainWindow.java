@@ -1,46 +1,63 @@
 import javax.swing.*;
-import javax.swing.border.Border;
 import java.awt.*;
+import java.awt.image.BufferStrategy;
 
 public class MainWindow extends JFrame {
 
     private JPanel mainPanel = new JPanel();
     private JPanel sideBar = new JPanel();
     private JPanel renderArea = new JPanel();
-
     private Canvas canvas = new Canvas();
+    private BufferStrategy strategy = null;
+    private Graphics graphics = null;
 
+    private int canvasHeight = 0;
+    private int canvasWidth = 0;
     public MainWindow(String _title) {
         setTitle(_title);
-        mainPanel.setLayout(new GridBagLayout());
-        prePack();
+        setLayout(new FlowLayout());
+        initComponents();
+        setContentPane(mainPanel);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        setLocationRelativeTo(null);
-        setLayout(new BorderLayout());
-        setMinimumSize(new Dimension(600, 400));
-        setMaximumSize(new Dimension(900, 600));
-        add(mainPanel, BorderLayout.CENTER);
         pack();
+        postPack();
+        setLocationRelativeTo(null);
+        setResizable(false);
         setVisible(true);
     }
 
-    public void prePack() {
-        GridBagConstraints c = new GridBagConstraints();
-        c.fill = GridBagConstraints.BOTH;
-        c.gridx = 0;
-        c.gridy = 0;
-        c.weightx = 1;
-        c.weighty = 1;
-        sideBar.setBackground(Color.RED);
-        mainPanel.add(sideBar, c);
+    public void initComponents() {
+        JButton loadMap = new JButton("Reload Canvas");
+        loadMap.addActionListener(e -> render());
+        sideBar.add(loadMap);
+        sideBar.setPreferredSize(new Dimension(300, 600));
+        mainPanel.add(sideBar);
+        renderArea.setPreferredSize(new Dimension(600, 600));
+        mainPanel.add(renderArea);
+    }
 
-        c.gridx = 1;
-        c.gridy = 0;
-        canvas.setSize(400, 400);
-        canvas.setBackground(Color.white);
+    public void postPack() {
+        canvasWidth = renderArea.getWidth();
+        canvasHeight = renderArea.getHeight();
+        canvas.setSize(canvasWidth, canvasHeight);
         renderArea.add(canvas);
-        renderArea.setBackground(Color.YELLOW);
-        mainPanel.add(renderArea, c);
-        mainPanel.setBackground(Color.blue);
+        canvas.setBackground(Color.white);
+        canvas.setIgnoreRepaint(true);
+        canvas.createBufferStrategy(2);
+        strategy = canvas.getBufferStrategy();
+        graphics = strategy.getDrawGraphics();
+    }
+
+    public void render() {
+        canvas.paint(graphics);
+        do {
+            do {
+                graphics = strategy.getDrawGraphics();
+                graphics.setColor(Color.white);
+                graphics.fillRect(0, 0, canvasWidth, canvasHeight);
+            } while (strategy.contentsRestored());
+            strategy.show();
+            Toolkit.getDefaultToolkit().sync();
+        } while (strategy.contentsLost());
     }
 }

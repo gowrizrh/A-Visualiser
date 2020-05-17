@@ -1,7 +1,5 @@
 package core;
 
-import java.util.Objects;
-
 public class Cell implements Comparable<Cell> {
     private int x;
     private int y;
