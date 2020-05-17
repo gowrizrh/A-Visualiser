@@ -1,10 +1,13 @@
+import core.Cell;
 import core.Map;
 import utils.MapParser;
+import utils.Palette;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.image.BufferStrategy;
-import java.io.File;
 
 public class MainWindow extends JFrame {
 
@@ -15,11 +18,14 @@ public class MainWindow extends JFrame {
     private BufferStrategy strategy = null;
     private Graphics graphics = null;
 
+    // Render necessaries
+    private Map world;
     private int canvasHeight = 0;
     private int canvasWidth = 0;
 
-    // Render necessaries
-    private Map world;
+    // State holders
+    private Cell start = null;
+    private Cell goal = null;
 
     public MainWindow(String _title) {
         setTitle(_title);
@@ -29,7 +35,7 @@ public class MainWindow extends JFrame {
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         pack();
         postPack();
-        world = MapParser.parse("src/main/resources/grid1.txt");
+        world = MapParser.parse("src/main/resources/grid6.txt");
         setLocationRelativeTo(null);
         setResizable(false);
         setVisible(true);
@@ -37,7 +43,7 @@ public class MainWindow extends JFrame {
     }
 
     public void initComponents() {
-        JButton loadMap = new JButton("Reload Canvas");
+        JButton loadMap = new JButton("Find Path");
         loadMap.addActionListener(e -> render());
         sideBar.add(loadMap);
         sideBar.setPreferredSize(new Dimension(300, 600));
@@ -56,11 +62,51 @@ public class MainWindow extends JFrame {
         canvas.createBufferStrategy(2);
         strategy = canvas.getBufferStrategy();
         graphics = strategy.getDrawGraphics();
+        canvas.addMouseListener(new MouseListener() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (SwingUtilities.isLeftMouseButton(e) && (start == null)) {
+                    int gridUnit = canvasWidth / world.cols();
+                    int x = e.getY() / gridUnit;
+                    int y = e.getX() / gridUnit;
+                    world.value(x, y, 6);
+                    start = world.cell(x, y);
+                } else if (SwingUtilities.isRightMouseButton(e) && (goal == null)) {
+                    int gridUnit = canvasWidth / world.cols();
+                    int x = e.getY() / gridUnit;
+                    int y = e.getX() / gridUnit;
+                    world.value(x, y, 9);
+                    goal = world.cell(x, y);
+                }
+
+                render();
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+
+            }
+        });
     }
 
     public void render() {
-        int gridUnit = 10;
-        int gridUnitY = 10;
+        int gridUnit = canvasWidth / world.cols();
+        int gridUnitY = canvasHeight / world.rows();
         canvas.paint(graphics);
         do {
             do {
@@ -72,16 +118,25 @@ public class MainWindow extends JFrame {
                 for (int i = 0; i < world.rows(); i++) {
                     for (int j = 0; j < world.cols(); j++) {
                         gridCase = world.value(i, j);
-                        graphics.setColor(Color.white);
                         graphics.fillRect(j * gridUnit + 3,i * gridUnitY + 3, gridUnit - 3, gridUnitY - 3);
                         switch (gridCase) {
+                            case 0:
+                                graphics.setColor(Palette.white);
+                                break;
                             case 1:
-                                graphics.setColor(Color.BLACK);
-                                graphics.fillRect(j * gridUnit + 3 , i * gridUnitY + 3, gridUnit - 3, gridUnitY - 3);
+                                graphics.setColor(Palette.black);
+                                break;
+                            case 6:
+                                graphics.setColor(Palette.yellow);
+                                break;
+                            case 9:
+                                graphics.setColor(Palette.blue);
                                 break;
                             default:
+                                graphics.setColor(Color.white);
                                 break;
                         }
+                        graphics.fillRect(j * gridUnit + 3 , i * gridUnitY + 3, gridUnit - 3, gridUnitY - 3);
                     }
                 }
             } while (strategy.contentsRestored());
