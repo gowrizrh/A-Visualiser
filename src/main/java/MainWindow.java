@@ -1,6 +1,10 @@
+import core.Map;
+import utils.MapParser;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferStrategy;
+import java.io.File;
 
 public class MainWindow extends JFrame {
 
@@ -13,6 +17,10 @@ public class MainWindow extends JFrame {
 
     private int canvasHeight = 0;
     private int canvasWidth = 0;
+
+    // Render necessaries
+    private Map world;
+
     public MainWindow(String _title) {
         setTitle(_title);
         setLayout(new FlowLayout());
@@ -21,9 +29,11 @@ public class MainWindow extends JFrame {
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         pack();
         postPack();
+        world = MapParser.parse("src/main/resources/grid1.txt");
         setLocationRelativeTo(null);
         setResizable(false);
         setVisible(true);
+        render();
     }
 
     public void initComponents() {
@@ -49,12 +59,31 @@ public class MainWindow extends JFrame {
     }
 
     public void render() {
+        int gridUnit = 10;
+        int gridUnitY = 10;
         canvas.paint(graphics);
         do {
             do {
                 graphics = strategy.getDrawGraphics();
                 graphics.setColor(Color.white);
                 graphics.fillRect(0, 0, canvasWidth, canvasHeight);
+
+                int gridCase = 0;
+                for (int i = 0; i < world.rows(); i++) {
+                    for (int j = 0; j < world.cols(); j++) {
+                        gridCase = world.value(i, j);
+                        graphics.setColor(Color.white);
+                        graphics.fillRect(j * gridUnit + 3,i * gridUnitY + 3, gridUnit - 3, gridUnitY - 3);
+                        switch (gridCase) {
+                            case 1:
+                                graphics.setColor(Color.BLACK);
+                                graphics.fillRect(j * gridUnit + 3 , i * gridUnitY + 3, gridUnit - 3, gridUnitY - 3);
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                }
             } while (strategy.contentsRestored());
             strategy.show();
             Toolkit.getDefaultToolkit().sync();

@@ -22,7 +22,7 @@ public class MapParser {
      * The length of the map is determined by the text file.
      * We probably need some limit on this later
      */
-    public Map parse(String path) {
+    public static Map parse(String path) {
         Path filePath = FileSystems.getDefault().getPath(path);
         List<String> lines = null;
         try {
