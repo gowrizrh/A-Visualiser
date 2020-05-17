@@ -1,9 +1,7 @@
 import core.Cell;
 import core.Map;
 
-import java.util.HashSet;
-import java.util.PriorityQueue;
-import java.util.Queue;
+import java.util.*;
 
 public class Starvis {
     private Cell start;
@@ -17,12 +15,12 @@ public class Starvis {
         return dx + dy;
     }
 
-    public void find(Cell _start, Cell _goal, Map _map) {
+    public ArrayList<Cell> find(Cell _start, Cell _goal, Map _map) {
         start = _start;
         goal = _goal;
         map = _map;
 
-        if (map.value(start) == 1) return;
+        if (map.value(start) == 1) return null;
         Queue<Cell> open = new PriorityQueue<>();
         HashSet<Cell> closed = new HashSet<Cell>();
         start.g(0); start.f(heuristic(start)); open.add(start);
@@ -34,10 +32,12 @@ public class Starvis {
 
             if (current == goal) {
                 System.out.println("Path found!");
+                ArrayList<Cell> paths = new ArrayList<>();
                 while (current.parent() != null) {
-                    System.out.print(current + " <- ");
+                    paths.add(current);
                     current = current.parent();
                 }
+                return paths;
             }
 
             for (Cell n : map.nodes(current)) {
@@ -57,6 +57,7 @@ public class Starvis {
             }
         }
 
+        return null;
     }
 
     public Map map() {

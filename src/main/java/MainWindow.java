@@ -8,6 +8,7 @@ import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.image.BufferStrategy;
+import java.util.ArrayList;
 
 public class MainWindow extends JFrame {
 
@@ -17,6 +18,8 @@ public class MainWindow extends JFrame {
     private Canvas canvas = new Canvas();
     private BufferStrategy strategy = null;
     private Graphics graphics = null;
+
+    private Starvis starvis = new Starvis();
 
     // Render necessaries
     private Map world;
@@ -35,7 +38,7 @@ public class MainWindow extends JFrame {
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         pack();
         postPack();
-        world = MapParser.parse("src/main/resources/grid6.txt");
+        world = MapParser.parse("src/main/resources/grid2.txt");
         setLocationRelativeTo(null);
         setResizable(false);
         setVisible(true);
@@ -44,7 +47,28 @@ public class MainWindow extends JFrame {
 
     public void initComponents() {
         JButton loadMap = new JButton("Find Path");
-        loadMap.addActionListener(e -> render());
+        loadMap.addActionListener(e -> {
+            ArrayList<Cell> paths = starvis.find(start, goal, world);
+            if (paths == null) {
+                JDialog d = new JDialog(this , "Warning", true);
+                d.setLayout(new BorderLayout());
+                d.add((new JLabel("No Path Found!")), BorderLayout.CENTER);
+                d.setSize(300, 100);
+                d.setLocationRelativeTo(this);
+                d.setVisible(true);
+                return;
+            }
+
+            for (Cell c : paths) {
+                world.value(c.x(), c.y(), 5);
+                try {
+                    Thread.sleep(50);
+                } catch (InterruptedException interruptedException) {
+                    interruptedException.printStackTrace();
+                }
+                render();
+            }
+        });
         sideBar.add(loadMap);
         sideBar.setPreferredSize(new Dimension(300, 600));
         mainPanel.add(sideBar);
@@ -125,6 +149,9 @@ public class MainWindow extends JFrame {
                                 break;
                             case 1:
                                 graphics.setColor(Palette.black);
+                                break;
+                            case 5:
+                                graphics.setColor(Palette.green);
                                 break;
                             case 6:
                                 graphics.setColor(Palette.yellow);
