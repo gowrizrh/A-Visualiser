@@ -1,3 +1,6 @@
+# Update: Inactive for sometime
+I'm in my final semester of university and have been busy with a lot of industry project works. I will resume this project as soon I have time or graduate, whichever is earlier.
+
 # A* Algorithm Visualiser
 
 ![Tests](https://github.com/gowrizrh/A-Visualiser/workflows/Tests/badge.svg?branch=master)
